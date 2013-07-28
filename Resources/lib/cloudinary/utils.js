@@ -341,7 +341,6 @@
       }
       return _results;
     })(), _.identity).join("&");
-    Ti.API.log("to_sign: " + to_sign + ". api_secret: " + api_secret + ". together: " + (to_sign + api_secret));
     return Ti.Utils.sha1(to_sign + api_secret);
   };
 

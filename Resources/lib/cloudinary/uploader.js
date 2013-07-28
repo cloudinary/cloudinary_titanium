@@ -394,13 +394,9 @@
     xhr.open('POST', api_url);
     if (file) {
       xhr.setRequestHeader("enctype", "multipart/form-data");
-      Ti.API.log('XHR' + JSON.stringify(xhr));
-      Ti.API.log('params' + JSON.stringify(params));
       return xhr.send(params);
     } else {
       xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-      Ti.API.log('XHR' + JSON.stringify(xhr));
-      Ti.API.log('params' + JSON.stringify(params));
       return xhr.send(JSON.stringify(params));
     }
   };

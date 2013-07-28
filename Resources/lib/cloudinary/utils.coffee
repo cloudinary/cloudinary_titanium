@@ -239,7 +239,6 @@ exports.signed_preloaded_image = (result) ->
 
 exports.api_sign_request = (params_to_sign, api_secret) ->
   to_sign = _.sortBy("#{k}=#{build_array(v).join(",")}" for k, v of params_to_sign when v, _.identity).join("&")
-  Ti.API.log("to_sign: #{to_sign}. api_secret: #{api_secret}. together: #{to_sign+api_secret}")
   Ti.Utils.sha1(to_sign + api_secret)
 
 exports.private_download_url = (public_id, format, options = {}) ->

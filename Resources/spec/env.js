@@ -20,5 +20,3 @@ for (var i = 0, l = methods.length; i < l;  i++) {
     Ti.API.debug('require ' + method);
 }
 this.jasmine = __j;
-//exports.tests_enabled = true;
-var testtest = 1;

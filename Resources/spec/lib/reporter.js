@@ -33,19 +33,16 @@ var TitaniumReporter = function() {
 
     this.updateTestResults = function(message) {
         testResults += message;
-        Ti.API.debug('updateTestResults: ' + testResults);
         titaniumTestsResultsWebView.html = testResultsHeader + testResults + testResultsFooter;
     };
 };
 
 TitaniumReporter.prototype = {
     reportRunnerResults: function(runner) {
-        Ti.API.debug('reportRunnerResults');
         //this.log('<h3>Test Runner Finished.</h3>');
     },
 
     reportRunnerStarting: function(runner) {
-        Ti.API.debug('reportRunnerStarting');
         this.log('<h3>Test Runner Started.</h3>');
     },
 
@@ -80,11 +77,9 @@ TitaniumReporter.prototype = {
                 }
             }
         }
-        Ti.API.debug(JSON.stringify(spec.results()));
     },
 
     reportSpecStarting: function(spec) {
-        Ti.API.debug('reportSpecStarting');
         //this.log('[' + spec.suite.description + '] ' + spec.description + '... ');
     },
 

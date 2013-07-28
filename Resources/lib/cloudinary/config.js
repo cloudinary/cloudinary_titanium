@@ -29,7 +29,7 @@
         try {
           cloudinary_config = require('../cloudinary_config').config;
         } catch (err) {
-          console.log("Couldn't find configuration file at 'Resource/lib/cloudinary_config.js'");
+          console.log("Couldn't find configuration file 'cloudinary_config.js'");
           cloudinary_config = {};
         }
       }

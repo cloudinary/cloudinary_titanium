@@ -107,13 +107,8 @@ call_api = (method, uri, params, callback, options) ->
   xhr.setRequestHeader('Authorization',
       'Basic ' + Ti.Utils.base64encode(api_key+':'+api_secret))
   xhr.open method.toUpperCase(), api_url
-  #xhr.setRequestHeader "enctype", "application/x-www-form-urlencoded"
-  #xhr.setRequestHeader "enctype", "multipart/form-data"
-  xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
-  Ti.API.log 'API XHR' + JSON.stringify(xhr)
-  Ti.API.log 'API params' + JSON.stringify(params)
+  #xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
   xhr.send JSON.stringify params
-  #xhr.send params
 
 
 only = (hash, keys...) ->

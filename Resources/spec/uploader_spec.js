@@ -1,12 +1,17 @@
 (function() {
 
   describe("cloudinary_uploader", function() {
-    var API_TIMEOUT, UPLOAD_TIMEOUT, cloudinary;
+    var API_TIMEOUT, RESOURCES_PREFIX, UPLOAD_TIMEOUT, cloudinary;
     cloudinary = require('/lib/cloudinary');
-    cloudinary.api = require('admin_api');
+    cloudinary.api = require('spec/lib/admin_api');
     UPLOAD_TIMEOUT = 120 * 1000;
     API_TIMEOUT = 60 * 1000;
+    RESOURCES_PREFIX = 'spec/res/';
     if (!(cloudinary.config().api_secret != null)) {
+      it("should configure api_secret and api_key", function() {
+        expect(cloudinary.config().api_key).toBeTruthy();
+        return expect(cloudinary.config().api_secret).toBeTruthy();
+      });
       return console.log("JASMINE: **** Please setup environment for uploader test to run!");
     }
     beforeEach(function() {
@@ -16,7 +21,7 @@
       var result;
       result = void 0;
       runs(function() {
-        return cloudinary.uploader.upload(Ti.Filesystem.getFile("logo.png"), function(result_) {
+        return cloudinary.uploader.upload(Ti.Filesystem.getFile("res/logo.png"), function(result_) {
           return result = result_;
         }, {
           timeout: UPLOAD_TIMEOUT
@@ -80,7 +85,7 @@
       var new_public_id, public_id, public_id2, result;
       result = void 0;
       runs(function() {
-        return cloudinary.uploader.upload("spec/logo.png", function(result_) {
+        return cloudinary.uploader.upload(RESOURCES_PREFIX + "spec/logo.png", function(result_) {
           return result = result_;
         }, {
           timeout: UPLOAD_TIMEOUT
@@ -119,7 +124,7 @@
       runs(function() {
         expect(result.error).toBe(void 0);
         result = void 0;
-        return cloudinary.uploader.upload("spec/favicon.ico", function(result_) {
+        return cloudinary.uploader.upload(RESOURCES_PREFIX + "spec/favicon.ico", function(result_) {
           return result = result_;
         }, {
           timeout: UPLOAD_TIMEOUT
@@ -209,7 +214,7 @@
       var result;
       result = void 0;
       runs(function() {
-        return cloudinary.uploader.upload("spec/logo.png", function(result_) {
+        return cloudinary.uploader.upload(RESOURCES_PREFIX + "spec/logo.png", function(result_) {
           return result = result_;
         }, {
           timeout: UPLOAD_TIMEOUT,
@@ -232,7 +237,7 @@
       var result;
       result = void 0;
       runs(function() {
-        return cloudinary.uploader.upload("spec/logo.png", function(result_) {
+        return cloudinary.uploader.upload(RESOURCES_PREFIX + "spec/logo.png", function(result_) {
           return result = result_;
         }, {
           timeout: UPLOAD_TIMEOUT,
@@ -245,7 +250,7 @@
       runs(function() {
         expect(result.error).toBe(void 0);
         result = void 0;
-        return cloudinary.uploader.upload("spec/logo.png", function(result_) {
+        return cloudinary.uploader.upload(RESOURCES_PREFIX + "spec/logo.png", function(result_) {
           return result = result_;
         }, {
           timeout: UPLOAD_TIMEOUT,
@@ -280,28 +285,13 @@
         expect(result.width).toBeLessThan(70);
         expect(result.height).toBeGreaterThan(5);
         return expect(result.height).toBeLessThan(15);
-        /*
-          it "should successfully upload stream", ->
-            this.timeout 5000
-            stream = cloudinary.uploader.upload_stream (result) ->
-              return done(new Error result.error.message) if result.error?
-              expect(result.width).toEqual(241)
-              expect(result.height).toEqual(51)
-              expected_signature = cloudinary.utils.api_sign_request({public_id: result.public_id, version: result.version}, cloudinary.config().api_secret)
-              expect(result.signature).toEqual(expected_signature)
-              done()
-            file_reader = fs.createReadStream('spec/logo.png', {encoding: 'binary'});
-            file_reader.on 'data', stream.write
-            file_reader.on 'end', stream.end
-        */
-
       });
     });
     return it("should successfully manipulate tags", function() {
       var result1, result2, resultX;
       result1 = void 0;
       runs(function() {
-        return cloudinary.uploader.upload("spec/logo.png", function(result_) {
+        return cloudinary.uploader.upload(RESOURCES_PREFIX + "spec/logo.png", function(result_) {
           return result1 = result_;
         }, {
           timeout: UPLOAD_TIMEOUT
@@ -313,7 +303,7 @@
       result2 = void 0;
       runs(function() {
         expect(result1.error).toBe(void 0);
-        return cloudinary.uploader.upload("spec/logo.png", function(result_) {
+        return cloudinary.uploader.upload(RESOURCES_PREFIX + "spec/logo.png", function(result_) {
           return result2 = result_;
         }, {
           timeout: UPLOAD_TIMEOUT

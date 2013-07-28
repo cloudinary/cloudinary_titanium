@@ -232,9 +232,6 @@
     });
     xhr.setRequestHeader('Authorization', 'Basic ' + Ti.Utils.base64encode(api_key + ':' + api_secret));
     xhr.open(method.toUpperCase(), api_url);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-    Ti.API.log('API XHR' + JSON.stringify(xhr));
-    Ti.API.log('API params' + JSON.stringify(params));
     return xhr.send(JSON.stringify(params));
   };
 

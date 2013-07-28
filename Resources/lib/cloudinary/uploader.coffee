@@ -41,33 +41,6 @@ build_upload_params = (options) ->
     tags: options.tags && utils.build_array(options.tags).join(",")
   params
 
-exports.upload_stream = (callback, options={}) ->
-  fs = require('fs')
-  path = require('path')
-  temp = require('temp')
-
-  temp_filename = temp.path()
-  temp_file = fs.createWriteStream temp_filename,
-    flags: 'w',
-    encoding: 'binary',
-    mode: 0o600
-
-  stream =
-    write: (data) ->
-      temp_file.write(new Buffer(data, 'binary'))
-    end: ->
-      temp_file.on "close", ->
-        try
-          exports.upload temp_filename, finish, options
-        catch e
-          finish(error: {message: e})
-      temp_file.end()
-
-      finish = (result) ->
-        fs.unlink(temp_filename)
-        callback.call(null, result)
-  stream
-
 exports.upload = (file, callback, options={}) ->
   call_api "upload", callback, options, ->
     params = build_upload_params(options)
@@ -175,52 +148,8 @@ call_api = (action, callback, options, get_params) ->
   xhr.open 'POST', api_url
   if file
     xhr.setRequestHeader "enctype", "multipart/form-data"
-    Ti.API.log 'XHR' + JSON.stringify(xhr)
-    Ti.API.log 'params' + JSON.stringify(params)
     xhr.send params
   else
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
-    Ti.API.log 'XHR' + JSON.stringify(xhr)
-    Ti.API.log 'params' + JSON.stringify(params)
     xhr.send JSON.stringify(params)
-
-exports.direct_upload = (callback_url, options) ->
-  params = build_upload_params(_.extend({callback: callback_url}, options))
-  params.signature = utils.api_sign_request(params, config().api_secret)
-  params.api_key = config().api_key
-
-  api_url = utils.api_url("upload", options)
-
-  for k, v of params when not utils.present(v)
-    delete params[k]
-
-  return hidden_fields: params, form_attrs: {action: api_url, method: "POST", enctype: "multipart/form-data"}
-
-
-exports.image_upload_tag = (field, options={}) ->
-  html_options = options.html ? {}
-  options.resource_type ?= "auto"
-  cloudinary_upload_url = utils.api_url("upload", options)
-
-  api_key = options.api_key ? config().api_key ? throw("Must supply api_key")
-  api_secret = options.api_secret ? config().api_secret ? throw("Must supply api_secret")
-
-  params = build_upload_params(options)
-  params["signature"] = utils.api_sign_request(params, api_secret)
-  params["api_key"] = api_key
-
-  # Remove blank parameters
-  for k, v of params when not utils.present(v)
-    delete params[k]
-
-  tag_options = _.extend(html_options, {
-      type: "file",
-      name: "file",
-      "data-url": cloudinary_upload_url,
-      "data-form-data": JSON.stringify(params),
-      "data-cloudinary-field": field,
-      "class": [html_options["class"], "cloudinary-fileupload"].join(" ")
-  })
-  return '<input ' + utils.html_attrs(tag_options) + '/>'
-
 
