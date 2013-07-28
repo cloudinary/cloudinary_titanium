@@ -2,11 +2,11 @@
   var call_api, config, only, transformation_string, utils, _,
     __slice = [].slice;
 
-  _ = require("../underscore");
+  _ = require("/lib/underscore");
 
-  utils = require("./utils");
+  utils = require("/lib/cloudinary/utils");
 
-  config = require("./config");
+  config = require("/lib/cloudinary/config");
 
   exports.usage = function(callback, options) {
     if (options == null) {

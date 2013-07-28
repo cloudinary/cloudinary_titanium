@@ -3,7 +3,6 @@ var _ = require('./underscore');
 exports.config = require("./cloudinary/config");
 exports.utils = require("./cloudinary/utils");
 exports.uploader = require("./cloudinary/uploader");
-exports.api = require("./cloudinary/api");
 exports.url = function(public_id, options) {
   options = _.extend({}, options);
   return exports.utils.url(public_id, options);    

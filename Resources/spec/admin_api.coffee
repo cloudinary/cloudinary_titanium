@@ -1,7 +1,6 @@
-_ = require("../underscore")
-#https = require('https')
-utils = require("./utils")
-config = require("./config")
+_ = require("/lib/underscore")
+utils = require("/lib/cloudinary/utils")
+config = require("/lib/cloudinary/config")
 
 exports.usage = (callback, options={}) ->
   call_api("get", ["usage"], {}, callback, options)

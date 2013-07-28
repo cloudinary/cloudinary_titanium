@@ -1,5 +1,6 @@
 describe "cloudinary_uploader", ->
   cloudinary = require '/lib/cloudinary'
+  cloudinary.api = require 'admin_api'
   UPLOAD_TIMEOUT = 120*1000
   API_TIMEOUT = 60*1000
   #UPLOAD_TIMEOUT = API_TIMEOUT = 10*1000

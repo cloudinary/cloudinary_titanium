@@ -3,6 +3,7 @@
   describe("cloudinary_uploader", function() {
     var API_TIMEOUT, UPLOAD_TIMEOUT, cloudinary;
     cloudinary = require('/lib/cloudinary');
+    cloudinary.api = require('admin_api');
     UPLOAD_TIMEOUT = 120 * 1000;
     API_TIMEOUT = 60 * 1000;
     if (!(cloudinary.config().api_secret != null)) {

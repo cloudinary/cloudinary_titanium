@@ -4,9 +4,8 @@ exports.execute = function() {
     Ti.include('/spec/env.js');
     Ti.API.log("Hello WORLD? " + testtest);
 
-    require('api_spec');
-//    require('cloudinary_spec');
- //   require('uploader_spec');
+    require('cloudinary_spec');
+    require('uploader_spec');
 
     jasmine.getEnv().addReporter(new reporter());
     jasmine.getEnv().execute();
