@@ -196,11 +196,12 @@
     }
     xhr = Ti.Network.createHTTPClient({
       onload: function() {
-        var result;
+        var e, result;
         if (_.include([200, 400, 401, 500], this.status)) {
           try {
             result = JSON.parse(this.responseText);
-          } catch (e) {
+          } catch (_error) {
+            e = _error;
             result = {
               error: {
                 message: "Server return invalid JSON response. Status Code " + this.status
@@ -230,8 +231,8 @@
       },
       timeout: (_ref5 = options["timeout"]) != null ? _ref5 : 60 * 1000
     });
-    xhr.setRequestHeader('Authorization', 'Basic ' + Ti.Utils.base64encode(api_key + ':' + api_secret));
     xhr.open(method.toUpperCase(), api_url);
+    xhr.setRequestHeader('Authorization', 'Basic ' + Ti.Utils.base64encode(api_key + ':' + api_secret));
     return xhr.send(JSON.stringify(params));
   };
 

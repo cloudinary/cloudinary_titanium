@@ -1,3 +1,4 @@
+Ti.include('env.js')
 describe "cloudinary_uploader", ->
   cloudinary = require '/lib/cloudinary'
   cloudinary.api = require 'spec/lib/admin_api'

@@ -104,9 +104,9 @@ call_api = (method, uri, params, callback, options) ->
       callback(error: e)
     timeout: options["timeout"] ? 60*1000
 
+  xhr.open method.toUpperCase(), api_url
   xhr.setRequestHeader('Authorization',
       'Basic ' + Ti.Utils.base64encode(api_key+':'+api_secret))
-  xhr.open method.toUpperCase(), api_url
   #xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
   xhr.send JSON.stringify params
 

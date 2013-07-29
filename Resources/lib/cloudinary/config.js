@@ -6,8 +6,8 @@
   cloudinary_config = void 0;
 
   module.exports = function(new_config, new_value) {
-    var cloudinary_url, k, uri, v, _ref;
-    if (!(cloudinary_config != null) || new_config === true) {
+    var cloudinary_url, err, k, uri, v, _ref;
+    if ((cloudinary_config == null) || new_config === true) {
       cloudinary_url = Ti.App.Properties.getString('CLOUDINARY_URL');
       if (cloudinary_url != null) {
         uri = require('url').parse(cloudinary_url);
@@ -28,7 +28,8 @@
       } else {
         try {
           cloudinary_config = _.clone(require('../cloudinary_config').config);
-        } catch (err) {
+        } catch (_error) {
+          err = _error;
           console.log("Couldn't find configuration file 'cloudinary_config.js'");
           cloudinary_config = {};
         }

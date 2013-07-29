@@ -27,7 +27,7 @@
   };
 
   exports.build_array = build_array = function(arg) {
-    if (!(arg != null)) {
+    if (arg == null) {
       return [];
     } else if (_.isArray(arg)) {
       return arg;
@@ -157,13 +157,13 @@
   };
 
   exports.url = cloudinary_url = function(public_id, options) {
-    var cdn_subdomain, cloud_name, cname, format, host, prefix, private_cdn, resource_type, secure, secure_distribution, shorten, subdomain, transformation, type, url, version, _ref;
+    var cdn_subdomain, cloud_name, cname, format, host, prefix, private_cdn, resource_type, secure, secure_distribution, shorten, subdomain, transformation, type, url, version;
     if (options == null) {
       options = {};
     }
     type = option_consume(options, "type", "upload");
     if (type === "fetch") {
-      if ((_ref = options.fetch_format) == null) {
+      if (options.fetch_format == null) {
         options.fetch_format = option_consume(options, "format");
       }
     }

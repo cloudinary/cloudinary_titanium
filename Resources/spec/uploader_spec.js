@@ -1,4 +1,5 @@
 (function() {
+  Ti.include('env.js');
 
   describe("cloudinary_uploader", function() {
     var API_TIMEOUT, RESOURCES_PREFIX, UPLOAD_TIMEOUT, cloudinary;
@@ -7,7 +8,7 @@
     UPLOAD_TIMEOUT = 120 * 1000;
     API_TIMEOUT = 60 * 1000;
     RESOURCES_PREFIX = 'spec/res/';
-    if (!(cloudinary.config().api_secret != null)) {
+    if (cloudinary.config().api_secret == null) {
       it("should configure api_secret and api_key", function() {
         expect(cloudinary.config().api_key).toBeTruthy();
         return expect(cloudinary.config().api_secret).toBeTruthy();

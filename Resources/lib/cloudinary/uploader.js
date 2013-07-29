@@ -24,7 +24,7 @@
 
   build_custom_headers = function(headers) {
     var k, v;
-    if (!(headers != null)) {
+    if (headers == null) {
       return void 0;
     } else if (_.isArray(headers)) {
 
@@ -70,47 +70,6 @@
       tags: options.tags && utils.build_array(options.tags).join(",")
     };
     return params;
-  };
-
-  exports.upload_stream = function(callback, options) {
-    var fs, path, stream, temp, temp_file, temp_filename;
-    if (options == null) {
-      options = {};
-    }
-    fs = require('fs');
-    path = require('path');
-    temp = require('temp');
-    temp_filename = temp.path();
-    temp_file = fs.createWriteStream(temp_filename, {
-      flags: 'w',
-      encoding: 'binary',
-      mode: 0x180
-    });
-    stream = {
-      write: function(data) {
-        return temp_file.write(new Buffer(data, 'binary'));
-      },
-      end: function() {
-        var finish;
-        temp_file.on("close", function() {
-          try {
-            return exports.upload(temp_filename, finish, options);
-          } catch (e) {
-            return finish({
-              error: {
-                message: e
-              }
-            });
-          }
-        });
-        temp_file.end();
-        return finish = function(result) {
-          fs.unlink(temp_filename);
-          return callback.call(null, result);
-        };
-      }
-    };
-    return stream;
   };
 
   exports.upload = function(file, callback, options) {
@@ -362,11 +321,12 @@
     api_url = utils.api_url(action, options);
     xhr = Ti.Network.createHTTPClient({
       onload: function() {
-        var result;
+        var e, result;
         if (_.include([200, 400, 401, 500], this.status)) {
           try {
             result = JSON.parse(this.responseText);
-          } catch (e) {
+          } catch (_error) {
+            e = _error;
             result = {
               error: {
                 message: "Server return invalid JSON response. Status Code " + this.status
@@ -400,76 +360,6 @@
       xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
       return xhr.send(JSON.stringify(params));
     }
-  };
-
-  exports.direct_upload = function(callback_url, options) {
-    var api_url, k, params, v;
-    params = build_upload_params(_.extend({
-      callback: callback_url
-    }, options));
-    params.signature = utils.api_sign_request(params, config().api_secret);
-    params.api_key = config().api_key;
-    api_url = utils.api_url("upload", options);
-    for (k in params) {
-      v = params[k];
-      if (!utils.present(v)) {
-        delete params[k];
-      }
-    }
-    return {
-      hidden_fields: params,
-      form_attrs: {
-        action: api_url,
-        method: "POST",
-        enctype: "multipart/form-data"
-      }
-    };
-  };
-
-  exports.image_upload_tag = function(field, options) {
-    var api_key, api_secret, cloudinary_upload_url, html_options, k, params, tag_options, v, _ref, _ref1, _ref2, _ref3;
-    if (options == null) {
-      options = {};
-    }
-    html_options = (_ref = options.html) != null ? _ref : {};
-    if ((_ref1 = options.resource_type) == null) {
-      options.resource_type = "auto";
-    }
-    cloudinary_upload_url = utils.api_url("upload", options);
-    api_key = (function() {
-      var _ref3;
-      if ((_ref2 = (_ref3 = options.api_key) != null ? _ref3 : config().api_key) != null) {
-        return _ref2;
-      } else {
-        throw new Error("Must supply api_key");
-      }
-    })();
-    api_secret = (function() {
-      var _ref4;
-      if ((_ref3 = (_ref4 = options.api_secret) != null ? _ref4 : config().api_secret) != null) {
-        return _ref3;
-      } else {
-        throw new Error("Must supply api_secret");
-      }
-    })();
-    params = build_upload_params(options);
-    params["signature"] = utils.api_sign_request(params, api_secret);
-    params["api_key"] = api_key;
-    for (k in params) {
-      v = params[k];
-      if (!utils.present(v)) {
-        delete params[k];
-      }
-    }
-    tag_options = _.extend(html_options, {
-      type: "file",
-      name: "file",
-      "data-url": cloudinary_upload_url,
-      "data-form-data": JSON.stringify(params),
-      "data-cloudinary-field": field,
-      "class": [html_options["class"], "cloudinary-fileupload"].join(" ")
-    });
-    return '<input ' + utils.html_attrs(tag_options) + '/>';
   };
 
 }).call(this);

@@ -1,4 +1,5 @@
 (function() {
+  Ti.include('env.js');
 
   describe("cloudinary", function() {
     var cloudinary, layer, layers;

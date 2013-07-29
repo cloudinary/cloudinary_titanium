@@ -1,3 +1,4 @@
+Ti.include('env.js')
 describe "cloudinary", ->
   cloudinary = require '/lib/cloudinary'
   beforeEach ->
