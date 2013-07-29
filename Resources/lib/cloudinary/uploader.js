@@ -336,19 +336,20 @@
       if ((_ref = (_ref1 = options.api_key) != null ? _ref1 : config().api_key) != null) {
         return _ref;
       } else {
-        throw "Must supply api_key";
+        throw new Error("Must supply api_key");
       }
     })();
     _ref1 = get_params.call(), params = _ref1[0], unsigned_params = _ref1[1], file = _ref1[2];
     if (options.signature != null) {
       params.signature = options.signature;
+      params.timestamp = options.timestamp;
     } else {
       api_secret = (function() {
         var _ref3;
         if ((_ref2 = (_ref3 = options.api_secret) != null ? _ref3 : config().api_secret) != null) {
           return _ref2;
         } else {
-          throw "Must supply api_secret";
+          throw new Error("Must supply api_secret");
         }
       })();
       params.signature = utils.api_sign_request(params, api_secret);
@@ -440,7 +441,7 @@
       if ((_ref2 = (_ref3 = options.api_key) != null ? _ref3 : config().api_key) != null) {
         return _ref2;
       } else {
-        throw "Must supply api_key";
+        throw new Error("Must supply api_key");
       }
     })();
     api_secret = (function() {
@@ -448,7 +449,7 @@
       if ((_ref3 = (_ref4 = options.api_secret) != null ? _ref4 : config().api_secret) != null) {
         return _ref3;
       } else {
-        throw "Must supply api_secret";
+        throw new Error("Must supply api_secret");
       }
     })();
     params = build_upload_params(options);

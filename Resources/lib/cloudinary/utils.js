@@ -173,7 +173,7 @@
     format = option_consume(options, "format");
     cloud_name = option_consume(options, "cloud_name", config().cloud_name);
     if (!cloud_name) {
-      throw "Unknown cloud_name";
+      throw new Error("Unknown cloud_name");
     }
     private_cdn = option_consume(options, "private_cdn", config().private_cdn);
     secure_distribution = option_consume(options, "secure_distribution", config().secure_distribution);
@@ -302,7 +302,7 @@
       if ((_ref2 = (_ref3 = options["cloud_name"]) != null ? _ref3 : config().cloud_name) != null) {
         return _ref2;
       } else {
-        throw "Must supply cloud_name";
+        throw new Error("Must supply cloud_name");
       }
     })();
     resource_type = (_ref3 = options["resource_type"]) != null ? _ref3 : "image";
@@ -354,7 +354,7 @@
       if ((_ref = (_ref1 = options.api_key) != null ? _ref1 : config().api_key) != null) {
         return _ref;
       } else {
-        throw "Must supply api_key";
+        throw new Error("Must supply api_key");
       }
     })();
     api_secret = (function() {
@@ -362,7 +362,7 @@
       if ((_ref1 = (_ref2 = options.api_secret) != null ? _ref2 : config().api_secret) != null) {
         return _ref1;
       } else {
-        throw "Must supply api_secret";
+        throw new Error("Must supply api_secret");
       }
     })();
     params = {

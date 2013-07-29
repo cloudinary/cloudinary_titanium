@@ -47,6 +47,56 @@ describe "cloudinary_uploader", ->
       expect(result.error).toBe undefined
       expect(result.result).toEqual("ok")
 
+  it "should fail upload file without signed request or api_secret", () ->
+    result = undefined
+
+    delete cloudinary.config().api_secret
+    expect ->
+      cloudinary.uploader.upload Ti.Filesystem.getFile("res/logo.png"), (result_) ->
+        result = result_
+      , timeout: UPLOAD_TIMEOUT
+    .toThrow "Must supply api_secret"
+
+  it "should successfully upload file using signed request", () ->
+    result = undefined
+    api_secret = cloudinary.utils.option_consume cloudinary.config(), 'api_secret'
+
+    runs ->
+      expect(cloudinary.config().api_secret).toBe undefined
+      params = timestamp: cloudinary.utils.timestamp()
+      params.signature = cloudinary.utils.api_sign_request(params, api_secret)
+      params.timeout = UPLOAD_TIMEOUT
+      cloudinary.uploader.upload Ti.Filesystem.getFile("res/logo.png"), (result_) ->
+        result = result_
+      , params
+
+    waitsFor ->
+      result
+    , 'Upload should finish', UPLOAD_TIMEOUT
+
+    runs ->
+      expect(result.error).toBe undefined
+      expect(result.width).toEqual(241)
+      expect(result.height).toEqual(51)
+      expected_signature = cloudinary.utils.api_sign_request({public_id: result.public_id, version: result.version}, api_secret)
+      expect(result.signature).toEqual(expected_signature)
+
+      params = timestamp: cloudinary.utils.timestamp(), public_id: result.public_id
+      params.signature = cloudinary.utils.api_sign_request(params, api_secret)
+      params.timeout = UPLOAD_TIMEOUT
+      result = undefined
+      cloudinary.uploader.destroy params.public_id, (result_) ->
+        result = result_
+      , params
+
+    waitsFor ->
+      result
+    , 'Delete should finish', API_TIMEOUT
+
+    runs ->
+      expect(result.error).toBe undefined
+      expect(result.result).toEqual("ok")
+
   it "should successfully upload url", () ->
     result = undefined
     runs ->
@@ -69,7 +119,7 @@ describe "cloudinary_uploader", ->
     result = undefined
 
     runs ->
-      cloudinary.uploader.upload RESOURCES_PREFIX+"spec/logo.png", (result_) ->
+      cloudinary.uploader.upload RESOURCES_PREFIX+"logo.png", (result_) ->
         result = result_
       , timeout: UPLOAD_TIMEOUT
     
@@ -105,7 +155,7 @@ describe "cloudinary_uploader", ->
     runs ->
       expect(result.error).toBe undefined
       result = undefined
-      cloudinary.uploader.upload RESOURCES_PREFIX+"spec/favicon.ico", (result_) ->
+      cloudinary.uploader.upload RESOURCES_PREFIX+"favicon.ico", (result_) ->
         result = result_
       , timeout: UPLOAD_TIMEOUT
 
@@ -176,7 +226,7 @@ describe "cloudinary_uploader", ->
   it "should support eager in upload", ->
     result = undefined
     runs ->
-      cloudinary.uploader.upload RESOURCES_PREFIX+"spec/logo.png", (result_) ->
+      cloudinary.uploader.upload RESOURCES_PREFIX+"logo.png", (result_) ->
         result = result_
       ,
         timeout: UPLOAD_TIMEOUT
@@ -192,7 +242,7 @@ describe "cloudinary_uploader", ->
   it "should support custom headers in upload", ->
     result = undefined
     runs ->
-      cloudinary.uploader.upload RESOURCES_PREFIX+"spec/logo.png", (result_) ->
+      cloudinary.uploader.upload RESOURCES_PREFIX+"logo.png", (result_) ->
         result = result_
       ,
         timeout: UPLOAD_TIMEOUT
@@ -205,7 +255,7 @@ describe "cloudinary_uploader", ->
     runs ->
       expect(result.error).toBe undefined
       result = undefined
-      cloudinary.uploader.upload RESOURCES_PREFIX+"spec/logo.png", (result_) ->
+      cloudinary.uploader.upload RESOURCES_PREFIX+"logo.png", (result_) ->
         result = result_
       ,
         timeout: UPLOAD_TIMEOUT
@@ -239,7 +289,7 @@ describe "cloudinary_uploader", ->
   it "should successfully manipulate tags", ->
     result1 = undefined
     runs ->
-      cloudinary.uploader.upload RESOURCES_PREFIX+"spec/logo.png", (result_) ->
+      cloudinary.uploader.upload RESOURCES_PREFIX+"logo.png", (result_) ->
         result1 = result_
       , timeout: UPLOAD_TIMEOUT
 
@@ -247,7 +297,7 @@ describe "cloudinary_uploader", ->
     result2 = undefined
     runs ->
       expect(result1.error).toBe undefined
-      cloudinary.uploader.upload RESOURCES_PREFIX+"spec/logo.png", (result_) ->
+      cloudinary.uploader.upload RESOURCES_PREFIX+"logo.png", (result_) ->
         result2 = result_
       , timeout: UPLOAD_TIMEOUT
 

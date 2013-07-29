@@ -171,7 +171,7 @@
       if ((_ref2 = (_ref3 = options["cloud_name"]) != null ? _ref3 : config().cloud_name) != null) {
         return _ref2;
       } else {
-        throw "Must supply cloud_name";
+        throw new Error("Must supply cloud_name");
       }
     })();
     api_key = (function() {
@@ -179,7 +179,7 @@
       if ((_ref3 = (_ref4 = options["api_key"]) != null ? _ref4 : config().api_key) != null) {
         return _ref3;
       } else {
-        throw "Must supply api_key";
+        throw new Error("Must supply api_key");
       }
     })();
     api_secret = (function() {
@@ -187,7 +187,7 @@
       if ((_ref4 = (_ref5 = options["api_secret"]) != null ? _ref5 : config().api_secret) != null) {
         return _ref4;
       } else {
-        throw "Must supply api_secret";
+        throw new Error("Must supply api_secret");
       }
     })();
     api_url = [cloudinary, "v1_1", cloud_name].concat(uri).join("/");

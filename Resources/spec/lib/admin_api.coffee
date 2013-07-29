@@ -76,9 +76,9 @@ exports.create_transformation = (name, definition, callback, options={}) ->
 
 call_api = (method, uri, params, callback, options) ->
   cloudinary = options["upload_prefix"] ? config().upload_prefix ? "https://api.cloudinary.com"
-  cloud_name = options["cloud_name"] ? config().cloud_name ? throw("Must supply cloud_name")
-  api_key = options["api_key"] ? config().api_key ? throw("Must supply api_key")
-  api_secret = options["api_secret"] ? config().api_secret ? throw("Must supply api_secret")
+  cloud_name = options["cloud_name"] ? config().cloud_name ? throw new Error("Must supply cloud_name")
+  api_key = options["api_key"] ? config().api_key ? throw new Error("Must supply api_key")
+  api_secret = options["api_secret"] ? config().api_secret ? throw new Error("Must supply api_secret")
   api_url = [cloudinary, "v1_1", cloud_name].concat(uri).join("/")
 
   if method == "get"

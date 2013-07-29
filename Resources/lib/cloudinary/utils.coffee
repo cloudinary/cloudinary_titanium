@@ -112,7 +112,7 @@ exports.url = cloudinary_url = (public_id, options = {}) ->
   version = option_consume(options, "version")
   format = option_consume(options, "format")
   cloud_name = option_consume(options, "cloud_name", config().cloud_name)
-  throw "Unknown cloud_name"  unless cloud_name
+  throw new Error("Unknown cloud_name") unless cloud_name
   private_cdn = option_consume(options, "private_cdn", config().private_cdn)
   secure_distribution = option_consume(options, "secure_distribution", config().secure_distribution)
   secure = option_consume(options, "secure", config().secure)
@@ -219,7 +219,7 @@ crc32 = (str) ->
 
 exports.api_url = (action = 'upload', options = {}) ->
   cloudinary = options["upload_prefix"] ? config().upload_prefix ? "https://api.cloudinary.com"
-  cloud_name = options["cloud_name"] ? config().cloud_name ? throw("Must supply cloud_name")
+  cloud_name = options["cloud_name"] ? config().cloud_name ? throw new Error("Must supply cloud_name")
   resource_type = options["resource_type"] ? "image"
   return [cloudinary, "v1_1", cloud_name, resource_type, action].join("/")
 
@@ -242,8 +242,8 @@ exports.api_sign_request = (params_to_sign, api_secret) ->
   Ti.Utils.sha1(to_sign + api_secret)
 
 exports.private_download_url = (public_id, format, options = {}) ->
-  api_key = options.api_key ? config().api_key ? throw("Must supply api_key")
-  api_secret = options.api_secret ? config().api_secret ? throw("Must supply api_secret")
+  api_key = options.api_key ? config().api_key ? throw new Error("Must supply api_key")
+  api_secret = options.api_secret ? config().api_secret ? throw new Error("Must supply api_secret")
 
   params = {
     timestamp: exports.timestamp(),

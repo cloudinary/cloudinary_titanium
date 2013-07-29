@@ -17,7 +17,7 @@ module.exports = (new_config, new_value) ->
           cloudinary_config[k] = v
     else
       try
-        cloudinary_config = require('../cloudinary_config').config
+        cloudinary_config = _.clone require('../cloudinary_config').config
       catch err
         console.log("Couldn't find configuration file 'cloudinary_config.js'")
         cloudinary_config = {}
