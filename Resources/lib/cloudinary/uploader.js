@@ -339,18 +339,22 @@
         throw "Must supply api_key";
       }
     })();
-    api_secret = (function() {
-      var _ref2;
-      if ((_ref1 = (_ref2 = options.api_secret) != null ? _ref2 : config().api_secret) != null) {
-        return _ref1;
-      } else {
-        throw "Must supply api_secret";
-      }
-    })();
-    _ref2 = get_params.call(), params = _ref2[0], unsigned_params = _ref2[1], file = _ref2[2];
-    params.signature = utils.api_sign_request(params, api_secret);
-    params.api_key = api_key;
+    _ref1 = get_params.call(), params = _ref1[0], unsigned_params = _ref1[1], file = _ref1[2];
+    if (options.signature != null) {
+      params.signature = options.signature;
+    } else {
+      api_secret = (function() {
+        var _ref3;
+        if ((_ref2 = (_ref3 = options.api_secret) != null ? _ref3 : config().api_secret) != null) {
+          return _ref2;
+        } else {
+          throw "Must supply api_secret";
+        }
+      })();
+      params.signature = utils.api_sign_request(params, api_secret);
+    }
     params = _.extend(params, unsigned_params);
+    params.api_key = api_key;
     if (file) {
       params.file = file;
     }

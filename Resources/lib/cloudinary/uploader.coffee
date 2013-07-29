@@ -141,14 +141,18 @@ call_tags_api = (tag, command, public_ids = [], callback, options = {}) ->
 
 call_api = (action, callback, options, get_params) ->
   options = _.clone(options)
-  api_key = options.api_key ? config().api_key ? throw("Must supply api_key")
-  api_secret = options.api_secret ? config().api_secret ? throw("Must supply api_secret")
 
+  api_key = options.api_key ? config().api_key ? throw("Must supply api_key")
   [params, unsigned_params, file] = get_params.call()
 
-  params.signature = utils.api_sign_request(params, api_secret)
-  params.api_key = api_key
+  if options.signature?
+      params.signature = options.signature
+  else
+      api_secret = options.api_secret ? config().api_secret ? throw("Must supply api_secret")
+      params.signature = utils.api_sign_request(params, api_secret)
+
   params = _.extend(params, unsigned_params)
+  params.api_key = api_key
   params.file = file if file
 
   api_url = utils.api_url(action, options)
