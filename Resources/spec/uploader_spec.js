@@ -5,9 +5,9 @@
     var API_TIMEOUT, RESOURCES_PREFIX, UPLOAD_TIMEOUT, cloudinary;
     cloudinary = require('/lib/cloudinary');
     cloudinary.api = require('spec/lib/admin_api');
-    UPLOAD_TIMEOUT = 120 * 1000;
-    API_TIMEOUT = 60 * 1000;
-    RESOURCES_PREFIX = 'spec/res/';
+    UPLOAD_TIMEOUT = 10 * 1000;
+    API_TIMEOUT = 10 * 1000;
+    RESOURCES_PREFIX = Ti.Filesystem.resourcesDirectory + 'spec/res/';
     if (cloudinary.config().api_secret == null) {
       it("should configure api_secret and api_key", function() {
         expect(cloudinary.config().api_key).toBeTruthy();
@@ -22,7 +22,7 @@
       var result;
       result = void 0;
       runs(function() {
-        return cloudinary.uploader.upload(Ti.Filesystem.getFile("res/logo.png"), function(result_) {
+        return cloudinary.uploader.upload(Ti.Filesystem.getFile(RESOURCES_PREFIX + "logo.png"), function(result_) {
           return result = result_;
         }, {
           timeout: UPLOAD_TIMEOUT
@@ -62,7 +62,7 @@
       result = void 0;
       delete cloudinary.config().api_secret;
       return expect(function() {
-        return cloudinary.uploader.upload(Ti.Filesystem.getFile("res/logo.png"), function(result_) {
+        return cloudinary.uploader.upload(Ti.Filesystem.getFile(RESOURCES_PREFIX + "logo.png"), function(result_) {
           return result = result_;
         }, {
           timeout: UPLOAD_TIMEOUT
@@ -81,7 +81,7 @@
         };
         params.signature = cloudinary.utils.api_sign_request(params, api_secret);
         params.timeout = UPLOAD_TIMEOUT;
-        return cloudinary.uploader.upload(Ti.Filesystem.getFile("res/logo.png"), function(result_) {
+        return cloudinary.uploader.upload(Ti.Filesystem.getFile(RESOURCES_PREFIX + "logo.png"), function(result_) {
           return result = result_;
         }, params);
       });

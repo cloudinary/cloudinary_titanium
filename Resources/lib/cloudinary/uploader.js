@@ -1,5 +1,5 @@
 (function() {
-  var TEXT_PARAMS, build_custom_headers, build_eager, build_upload_params, call_api, call_tags_api, config, utils, _;
+  var EncodeFieldPart, EncodeFilePart, TEXT_PARAMS, build_custom_headers, build_eager, build_upload_params, call_api, call_tags_api, config, utils, _;
 
   _ = require("../underscore");
 
@@ -87,12 +87,10 @@
             }
           ];
         } else {
-          if (file[0] !== '/') {
-            file = '../../' + file;
-          }
           return [params, {}, Ti.Filesystem.getFile(file)];
         }
       } else {
+        Ti.API.info(JSON.stringify([file, file.size, file.nativePath]));
         return [params, {}, file];
       }
     });
@@ -288,7 +286,7 @@
   };
 
   call_api = function(action, callback, options, get_params) {
-    var api_key, api_secret, api_url, file, params, unsigned_params, xhr, _ref, _ref1, _ref2, _ref3;
+    var api_key, api_secret, api_url, boundary, content, file, filename, key, params, post_data, raw, unsigned_params, v, value, xhr, _i, _len, _ref, _ref1, _ref2, _ref3;
     options = _.clone(options);
     api_key = (function() {
       var _ref1;
@@ -353,13 +351,57 @@
       timeout: (_ref3 = options["timeout"]) != null ? _ref3 : 60 * 1000
     });
     xhr.open('POST', api_url);
-    if (file) {
-      xhr.setRequestHeader("enctype", "multipart/form-data");
-      return xhr.send(params);
-    } else {
-      xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-      return xhr.send(JSON.stringify(params));
+    boundary = "boundary-" + (Math.random());
+    xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
+    post_data = Ti.createBuffer();
+    for (key in params) {
+      value = params[key];
+      if (_.isArray(value)) {
+        for (_i = 0, _len = value.length; _i < _len; _i++) {
+          v = value[_i];
+          post_data.append(EncodeFieldPart(boundary, key + "[]", v));
+        }
+      } else if (utils.present(value)) {
+        post_data.append(EncodeFieldPart(boundary, key, value));
+      }
     }
+    if (file != null) {
+      filename = file.name;
+      post_data.append(EncodeFilePart(boundary, 'application/octet-stream', 'file', filename));
+      raw = Ti.Stream.createStream({
+        source: file.read(),
+        mode: Ti.Stream.MODE_READ
+      });
+      content = Ti.Stream.readAll(raw);
+      post_data.append(content);
+      post_data.append(Ti.createBuffer({
+        value: "\r\n"
+      }));
+    }
+    post_data.append(Ti.createBuffer({
+      value: "--" + boundary + "--"
+    }));
+    return xhr.send(post_data.toBlob());
+  };
+
+  EncodeFieldPart = function(boundary, name, value) {
+    var return_part;
+    return_part = "--" + boundary + "\r\n";
+    return_part += "Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n";
+    return_part += value + "\r\n";
+    return Ti.createBuffer({
+      value: return_part
+    });
+  };
+
+  EncodeFilePart = function(boundary, type, name, filename) {
+    var return_part;
+    return_part = "--" + boundary + "\r\n";
+    return_part += "Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + filename + "\"\r\n";
+    return_part += "Content-Type: " + type + "\r\n\r\n";
+    return Ti.createBuffer({
+      value: return_part
+    });
   };
 
 }).call(this);

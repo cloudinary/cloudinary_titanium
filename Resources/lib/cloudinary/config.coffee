@@ -1,6 +1,8 @@
 _ = require("../underscore")
 
 cloudinary_config = undefined
+base_cloudinary_config = require('../cloudinary_config').config
+
 module.exports = (new_config, new_value) ->
   if !cloudinary_config? || new_config == true
     cloudinary_url = Ti.App.Properties.getString('CLOUDINARY_URL')
@@ -17,7 +19,7 @@ module.exports = (new_config, new_value) ->
           cloudinary_config[k] = v
     else
       try
-        cloudinary_config = _.clone require('../cloudinary_config').config
+        cloudinary_config = _.clone base_cloudinary_config
       catch err
         console.log("Couldn't find configuration file 'cloudinary_config.js'")
         cloudinary_config = {}

@@ -81,8 +81,7 @@ call_api = (method, uri, params, callback, options) ->
   api_secret = options["api_secret"] ? config().api_secret ? throw new Error("Must supply api_secret")
   api_url = [cloudinary, "v1_1", cloud_name].concat(uri).join("/")
 
-  if method == "get"
-    api_url += "?" + utils.querystring.stringify(params)
+  api_url += "?" + utils.querystring.stringify(params)
 
   xhr = Ti.Network.createHTTPClient
     onload: ->
@@ -107,8 +106,8 @@ call_api = (method, uri, params, callback, options) ->
   xhr.open method.toUpperCase(), api_url
   xhr.setRequestHeader('Authorization',
       'Basic ' + Ti.Utils.base64encode(api_key+':'+api_secret))
-  #xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
-  xhr.send JSON.stringify params
+  xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
+  xhr.send()
 
 
 only = (hash, keys...) ->

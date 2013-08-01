@@ -191,9 +191,7 @@
       }
     })();
     api_url = [cloudinary, "v1_1", cloud_name].concat(uri).join("/");
-    if (method === "get") {
-      api_url += "?" + utils.querystring.stringify(params);
-    }
+    api_url += "?" + utils.querystring.stringify(params);
     xhr = Ti.Network.createHTTPClient({
       onload: function() {
         var e, result;
@@ -233,7 +231,8 @@
     });
     xhr.open(method.toUpperCase(), api_url);
     xhr.setRequestHeader('Authorization', 'Basic ' + Ti.Utils.base64encode(api_key + ':' + api_secret));
-    return xhr.send(JSON.stringify(params));
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    return xhr.send();
   };
 
   only = function() {

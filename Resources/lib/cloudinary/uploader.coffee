@@ -48,7 +48,6 @@ exports.upload = (file, callback, options={}) ->
       if (file.match(/^https?:/) || file.match(/^data:image\/\w*;base64,([a-zA-Z0-9\/+\n=]+)$/))
         return [params, file: file]
       else
-        file = '../../' + file if file[0] != '/'
         return [params, {}, Ti.Filesystem.getFile file]
     else
       return [params, {}, file]
@@ -147,10 +146,39 @@ call_api = (action, callback, options, get_params) ->
     timeout: options["timeout"] ? 60*1000
 
   xhr.open 'POST', api_url
-  if file
-    xhr.setRequestHeader "enctype", "multipart/form-data"
-    xhr.send params
-  else
-    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8")
-    xhr.send JSON.stringify(params)
+
+  boundary = "boundary-#{Math.random()}"
+  xhr.setRequestHeader "Content-Type", "multipart/form-data; boundary=#{boundary}"
+
+  post_data = Ti.createBuffer()
+  for key, value of params 
+    if _.isArray(value)
+      for v in value 
+        post_data.append EncodeFieldPart(boundary, key+"[]", v)
+    else if utils.present(value)
+      post_data.append EncodeFieldPart(boundary, key, value) 
+ 
+  if file?
+    filename = file.name 
+    post_data.append EncodeFilePart(boundary, 'application/octet-stream', 'file', filename)
+    raw = Ti.Stream.createStream(source: file.read(), mode: Ti.Stream.MODE_READ)
+    content = Ti.Stream.readAll(raw)
+    post_data.append content
+    post_data.append Ti.createBuffer(value: "\r\n")
+
+  post_data.append Ti.createBuffer(value: "--" + boundary + "--")
+  xhr.send post_data.toBlob()
+
+EncodeFieldPart = (boundary, name, value) ->
+  return_part = "--#{boundary}\r\n";
+  return_part += "Content-Disposition: form-data; name=\"#{name}\"\r\n\r\n"
+  return_part += value + "\r\n"
+  Ti.createBuffer(value: return_part)
+
+EncodeFilePart = (boundary,type,name,filename) ->
+  return_part = "--#{boundary}\r\n";
+  return_part += "Content-Disposition: form-data; name=\"#{name}\"; filename=\"#{filename}\"\r\n";
+  return_part += "Content-Type: #{type}\r\n\r\n";
+  Ti.createBuffer(value: return_part)
+
 

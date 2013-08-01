@@ -2,9 +2,9 @@ Ti.include('env.js')
 describe "cloudinary_uploader", ->
   cloudinary = require '/lib/cloudinary'
   cloudinary.api = require 'spec/lib/admin_api'
-  UPLOAD_TIMEOUT = 120*1000
-  API_TIMEOUT = 60*1000
-  RESOURCES_PREFIX = 'spec/res/'
+  UPLOAD_TIMEOUT = 10*1000
+  API_TIMEOUT = 10*1000
+  RESOURCES_PREFIX = Ti.Filesystem.resourcesDirectory + 'spec/res/'
 
   if !cloudinary.config().api_secret?
     it "should configure api_secret and api_key", () ->
@@ -19,7 +19,7 @@ describe "cloudinary_uploader", ->
     result = undefined
 
     runs ->
-      cloudinary.uploader.upload Ti.Filesystem.getFile("res/logo.png"), (result_) ->
+      cloudinary.uploader.upload Ti.Filesystem.getFile(RESOURCES_PREFIX + "logo.png"), (result_) ->
         result = result_
       , timeout: UPLOAD_TIMEOUT
 
@@ -47,13 +47,13 @@ describe "cloudinary_uploader", ->
     runs ->
       expect(result.error).toBe undefined
       expect(result.result).toEqual("ok")
-
+  
   it "should fail upload file without signed request or api_secret", () ->
     result = undefined
 
     delete cloudinary.config().api_secret
     expect ->
-      cloudinary.uploader.upload Ti.Filesystem.getFile("res/logo.png"), (result_) ->
+      cloudinary.uploader.upload Ti.Filesystem.getFile(RESOURCES_PREFIX + "logo.png"), (result_) ->
         result = result_
       , timeout: UPLOAD_TIMEOUT
     .toThrow "Must supply api_secret"
@@ -67,7 +67,7 @@ describe "cloudinary_uploader", ->
       params = timestamp: cloudinary.utils.timestamp()
       params.signature = cloudinary.utils.api_sign_request(params, api_secret)
       params.timeout = UPLOAD_TIMEOUT
-      cloudinary.uploader.upload Ti.Filesystem.getFile("res/logo.png"), (result_) ->
+      cloudinary.uploader.upload Ti.Filesystem.getFile(RESOURCES_PREFIX + "logo.png"), (result_) ->
         result = result_
       , params
 

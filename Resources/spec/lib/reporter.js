@@ -33,7 +33,7 @@ var TitaniumReporter = function() {
 
     this.updateTestResults = function(message) {
         testResults += message;
-        Ti.API.debug('updateTestResults: ' + testResults);
+        //Ti.API.debug('updateTestResults: ' + testResults);
         titaniumTestsResultsWebView.html = testResultsHeader + testResults + testResultsFooter;
     };
 };
