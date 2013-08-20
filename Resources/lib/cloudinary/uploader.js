@@ -90,7 +90,6 @@
           return [params, {}, Ti.Filesystem.getFile(file)];
         }
       } else {
-        Ti.API.info(JSON.stringify([file, file.size, file.nativePath]));
         return [params, {}, file];
       }
     });
