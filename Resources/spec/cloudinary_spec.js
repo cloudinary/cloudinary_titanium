@@ -40,7 +40,7 @@
       };
       result = cloudinary.utils.url("test", options);
       expect(options).toEqual({});
-      return expect(result).toEqual("https://cloudinary-a.akamaihd.net/test123/image/upload/test");
+      return expect(result).toEqual("https://test123-res.cloudinary.com/image/upload/test");
     });
     it("should not add cloud_name if secure private_cdn and secure non akamai secure_distribution", function() {
       var options, result;

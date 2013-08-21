@@ -24,7 +24,7 @@ describe "cloudinary", ->
     options = secure: true, private_cdn: true
     result = cloudinary.utils.url("test", options)
     expect(options).toEqual {}
-    expect(result).toEqual "https://cloudinary-a.akamaihd.net/test123/image/upload/test"
+    expect(result).toEqual "https://test123-res.cloudinary.com/image/upload/test"
 
   it "should not add cloud_name if secure private_cdn and secure non akamai secure_distribution", ->
     options = secure: true, private_cdn: true, secure_distribution: "something.cloudfront.net"

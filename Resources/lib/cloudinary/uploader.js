@@ -67,6 +67,9 @@
       eager_notification_url: options.eager_notification_url,
       eager_async: options.eager_async,
       invalidate: options.invalidate,
+      discard_original_filename: options.discard_original_filename,
+      proxy: options.proxy,
+      folder: options.folder,
       tags: options.tags && utils.build_array(options.tags).join(",")
     };
     return params;
@@ -80,7 +83,7 @@
       var params;
       params = build_upload_params(options);
       if (typeof file === 'string') {
-        if (file.match(/^https?:/) || file.match(/^data:image\/\w*;base64,([a-zA-Z0-9\/+\n=]+)$/)) {
+        if (file.match(/^https?:|^s3:|^data:[^;]*;base64,([a-zA-Z0-9\/+\n=]+)$/)) {
           return [
             params, {
               file: file
