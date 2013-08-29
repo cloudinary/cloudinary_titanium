@@ -1,27 +1,27 @@
 Cloudinary
 ==========
 
-Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline.
+Cloudinary is a cloud-based service that offers a solution to a web application's entire image management pipeline.
 
-Easily upload images to the cloud. Automatically perform smart image resizing, cropping and conversion without installing any complex software. Integrate Facebook or Twitter profile image extraction in a snap, in any dimension and style to match your website’s graphics requirements. Images are seamlessly delivered through a fast CDN, and much much more.
+Easily upload images to the cloud. Automatically perform smart image resizing, cropping and conversion without installing any complex software. Integrate Facebook or Twitter profile image extraction in a snap, in any dimension and style to match your website’s graphics requirements. Images are seamlessly delivered through a fast CDN, and much more.
 
 Cloudinary offers comprehensive APIs and administration capabilities and is easy to integrate with any web application, existing or new.
 
 Cloudinary provides URL and HTTP based APIs that can be easily integrated with any Web development framework.
 
-For Titanium, Cloudinary provides a client-side JavaScript library for simplifying the integration with Titanium supported mobile platforms (Android, iOS, BlackBerry, Tizen) even further.
+For Appcelerator Titanium, Cloudinary provides a client-side JavaScript library for simplifying the integration with Titanium supported mobile platforms (Android, iOS, BlackBerry, Tizen) even further.
 
 ## Setup
 
 * [Sign up](https://cloudinary.com/users/register/free) for a free Cloudinary account
 * [Register, download Titanium SDK, setup Titanium Studio and start a project](http://www.appcelerator.com/developers/)
 * [Download](https://github.com/cloudinary/cloudinary_titanium/archive/master.zip) or [clone](https://github.com/cloudinary/cloudinary_titanium.git) this repository
-* Copy the Resources/lib folder into your project (if you already have one you can merge the content)
-* Copy the `cloudinary_config.js.sample` into `cloudinary_config.js` in edit it to reflect your Cloudinary cloud name.
+* Copy the `Resources/lib` folder into your project (if you already have one you can merge the content)
+* Copy the `cloudinary_config.js.sample` file into `cloudinary_config.js` and edit it to include your Cloudinary cloud name.
 
 ## Usage
 
-The Cloudinary Documentation can be found at: http://cloudinary.com/documentation
+Cloudinary's general documentation can be found at: http://cloudinary.com/documentation
 
 Loading the module:
 
@@ -44,7 +44,7 @@ Uploading an image (requires a backend with Cloudinary framework):
     cloudinary.uploader.upload(file, callback, signed_request);
 
 
-Uploading an image with `api_secret` (Not recommended - your API secret will be exposed to users!)
+Uploading an image with `api_secret` (Not recommended - your API secret might be exposed to users)
 
     var file = Ti.Filesystem.getFile('my_file')
     function callback(result) {
@@ -82,6 +82,7 @@ Additional resources are available at:
 * [Documentation](http://cloudinary.com/documentation)
 * [Knowledge Base](http://support.cloudinary.com/forums)
 * [Upload API documentation](http://cloudinary.com/documentation/upload_images)
+* [Image transformations documentation](http://cloudinary.com/documentation/image_transformations)
 
 ## Support
 
