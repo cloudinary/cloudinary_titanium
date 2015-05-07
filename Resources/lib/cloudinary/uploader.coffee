@@ -1,4 +1,3 @@
-_ = require("../underscore")
 utils = require("./utils")
 config = require("./config")
 
@@ -40,7 +39,7 @@ build_upload_params = (options) ->
     invalidate: options.invalidate,
     discard_original_filename: options.discard_original_filename,
     proxy: options.proxy,
-    folder: options.folder,    
+    folder: options.folder,
     tags: options.tags && utils.build_array(options.tags).join(",")
   params
 
@@ -154,15 +153,15 @@ call_api = (action, callback, options, get_params) ->
   xhr.setRequestHeader "Content-Type", "multipart/form-data; boundary=#{boundary}"
 
   post_data = Ti.createBuffer()
-  for key, value of params 
+  for key, value of params
     if _.isArray(value)
-      for v in value 
+      for v in value
         post_data.append EncodeFieldPart(boundary, key+"[]", v)
     else if utils.present(value)
-      post_data.append EncodeFieldPart(boundary, key, value) 
- 
+      post_data.append EncodeFieldPart(boundary, key, value)
+
   if file?
-    filename = file.name 
+    filename = file.name
     post_data.append EncodeFilePart(boundary, 'application/octet-stream', 'file', filename)
     raw = Ti.Stream.createStream(source: file.read(), mode: Ti.Stream.MODE_READ)
     content = Ti.Stream.readAll(raw)
@@ -183,5 +182,3 @@ EncodeFilePart = (boundary,type,name,filename) ->
   return_part += "Content-Disposition: form-data; name=\"#{name}\"; filename=\"#{filename}\"\r\n";
   return_part += "Content-Type: #{type}\r\n\r\n";
   Ti.createBuffer(value: return_part)
-
-
