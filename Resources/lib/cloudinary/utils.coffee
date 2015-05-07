@@ -1,4 +1,3 @@
-_ = require("../underscore")
 config = require("./config")
 
 exports.CF_SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
@@ -19,8 +18,8 @@ exports.build_array = build_array = (arg) ->
   if !arg?
     []
   else if _.isArray(arg)
-    arg 
-  else 
+    arg
+  else
     [arg]
 
 exports.present = present = (value) ->
@@ -41,6 +40,7 @@ exports.generate_transformation_string = generate_transformation_string = (optio
   crop = option_consume(options, "crop")
   angle = build_array(option_consume(options, "angle")).join(".")
   no_html_sizes = has_layer or present(angle) or crop == "fit" or crop == "limit"
+  dpr = option_consume(options, "dpr")
 
   delete options["width"] if width and (no_html_sizes or parseFloat(width) < 1)
   delete options["height"] if height and (no_html_sizes or parseFloat(height) < 1)
@@ -50,9 +50,9 @@ exports.generate_transformation_string = generate_transformation_string = (optio
   named_transformation = []
   if _.filter(base_transformations, _.isObject).length > 0
     base_transformations = _.map(base_transformations, (base_transformation) ->
-      if _.isObject(base_transformation) 
-        generate_transformation_string(_.clone(base_transformation)) 
-      else 
+      if _.isObject(base_transformation)
+        generate_transformation_string(_.clone(base_transformation))
+      else
         generate_transformation_string(transformation: base_transformation)
     )
   else
@@ -76,6 +76,7 @@ exports.generate_transformation_string = generate_transformation_string = (optio
     a: angle
     bo: border
     fl: flags
+    dpr: dpr
 
   simple_params =
     x: "x"
@@ -123,13 +124,13 @@ exports.url = cloudinary_url = (public_id, options = {}) ->
 
   if public_id.match(/^https?:/)
     return public_id if type is "upload" or type is "asset"
-    public_id = encodeURIComponent(public_id).replace(/%3A/g, ":").replace(/%2F/g, "/") 
-  else 
+    public_id = encodeURIComponent(public_id).replace(/%3A/g, ":").replace(/%2F/g, "/")
+  else
     public_id = encodeURIComponent(decodeURIComponent(public_id)).replace(/%3A/g, ":").replace(/%2F/g, "/")
-    public_id += "." + format if format  
+    public_id += "." + format if format
 
   shared_domain = !private_cdn
-  if secure        
+  if secure
     if !secure_distribution || secure_distribution == exports.OLD_AKAMAI_SHARED_CDN
       secure_distribution = (if private_cdn then "#{cloud_name}-res.cloudinary.com" else exports.SHARED_CDN)
     shared_domain ||= secure_distribution == exports.SHARED_CDN
@@ -145,7 +146,7 @@ exports.url = cloudinary_url = (public_id, options = {}) ->
     type = undefined
 
   version ?= 1 if public_id.search("/") >= 0 && !public_id.match(/^v[0-9]+/) && !public_id.match(/^https?:\//)
-  
+
   url = [ prefix, resource_type, type, transformation, (if version then "v" + version else ""), public_id ].join("/")
   url.replace(/([^:])\/+/g, "$1/")
 
@@ -252,7 +253,7 @@ exports.sign_request = (params, options) ->
   # Remove blank parameters
   for k, v of params when not exports.present(v)
     delete params[k]
-    
+
   params.signature = exports.api_sign_request(params, api_secret)
   params.api_key = api_key
 
@@ -260,7 +261,7 @@ exports.sign_request = (params, options) ->
 
 exports.zip_download_url = (tag, options = {}) ->
   params = exports.sign_request({
-    timestamp: exports.timestamp(), 
+    timestamp: exports.timestamp(),
     tag: tag,
     transformation: exports.generate_transformation_string(options)
   }, options)

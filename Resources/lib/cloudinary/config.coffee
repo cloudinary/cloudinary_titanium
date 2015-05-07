@@ -1,5 +1,3 @@
-_ = require("../underscore")
-
 cloudinary_config = undefined
 base_cloudinary_config = require('../cloudinary_config').config
 
